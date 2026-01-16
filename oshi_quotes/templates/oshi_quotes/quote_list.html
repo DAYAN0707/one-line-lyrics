@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>One Line Lyrics</title>
+</head>
+<body>
+    <h1>推しの名言リスト</h1>
+
+    {% if user.is_authenticated %}
+        <p>こんにちは、{{ user.username }}さん！</p>
+        <a href="{% url 'quote_add' %}">[＋新しいフレーズを追加]</a> | 
+        <form action="{% url 'logout' %}" method="post" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit">ログアウト</button>
+        </form>
+    {% else %}
+        <a href="{% url 'login' %}">ログインして投稿する</a>
+    {% endif %}
+
+    <hr>
+
+    {% for quote in quotes %}
+        <div style="border: 1px solid #ccc; margin-bottom: 10px; padding: 10px;">
+            <p style="font-size: 20px; font-weight: bold;">「{{ quote.text }}」</p>
+            <p>{{ quote.artist }} - {{ quote.song_title }}</p>
+            <small>投稿者: {{ quote.author.username }} | {{ quote.created_at }}</small>
+        </div>
+    {% empty %}
+        <p>まだ名言がありません。上のリンクから追加してみてね！</p>
+    {% endfor %}
+</body>
+</html>
