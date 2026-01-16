@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head><title>フレーズ登録</title></head>
+<body>
+    <h1>新しいフレーズを登録</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">保存する</button>
+    </form>
+    <hr>
+    <a href="{% url 'quote_list' %}">一覧に戻る</a>
+</body>
+</html>
