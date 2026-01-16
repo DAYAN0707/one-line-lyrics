@@ -1,32 +1,99 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
-    <title>One Line Lyrics</title>
+    <meta charset="UTF-8">
+    <title>One Line Lyrics - UVERworld Style</title>
+    <style>
+        /* 全体の背景と文字色 */
+        body {
+            background-color: #0a0a0a; /* 真っ黒すぎない高級感のある黒 */
+            color: #ffffff;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #00ffcc; /* UVERっぽいエメラルドグリーン */
+            border-bottom: 2px solid #00ffcc;
+            padding-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* リンクとボタン */
+        a { color: #00ffcc; text-decoration: none; font-weight: bold; }
+        a:hover { text-decoration: underline; }
+
+        button {
+            background: transparent;
+            border: 1px solid #00ffcc;
+            color: #00ffcc;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        button:hover {
+            background: #00ffcc;
+            color: #000;
+        }
+
+        /* 投稿カードのデザイン */
+        .quote-card {
+            background: #1a1a1a; /* カードの背景 */
+            border-left: 5px solid #ccff00; /* 左側のアクセント線 */
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 0 10px 10px 0;
+            box-shadow: 0 4px 15px rgba(204, 255, 0, 0.1); /* ほのかな光 */
+        }
+
+        .phrase {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .info {
+            color: #ccff00;
+            font-size: 14px;
+        }
+
+        .author-tag {
+            color: #aaaaaa;
+            font-size: 12px;
+            margin-top: 10px;
+            display: block;
+        }
+    </style>
 </head>
 <body>
-    <h1>推しの名言リスト</h1>
+    <h1>One Line Lyrics</h1>
 
-    {% if user.is_authenticated %}
-        <p>こんにちは、{{ user.username }}さん！</p>
-        <a href="{% url 'quote_add' %}">[＋新しいフレーズを追加]</a> | 
-        <form action="{% url 'logout' %}" method="post" style="display: inline;">
-            {% csrf_token %}
-            <button type="submit">ログアウト</button>
-        </form>
-    {% else %}
-        <a href="{% url 'login' %}">ログインして投稿する</a>
-    {% endif %}
-
-    <hr>
+    <div style="margin-bottom: 20px;">
+        {% if user.is_authenticated %}
+            <span>Welcome, <strong>{{ user.first_name|default:user.username }}</strong></span>
+            | <a href="{% url 'quote_add' %}">[+ Add Phrase]</a>
+            | <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit">Logout</button>
+            </form>
+        {% else %}
+            <a href="{% url 'login' %}">Login to Post</a>
+        {% endif %}
+    </div>
 
     {% for quote in quotes %}
-        <div style="border: 1px solid #ccc; margin-bottom: 10px; padding: 10px; border-radius: 5px;">
-            <p style="font-size: 20px; font-weight: bold; margin: 0;">「{{ quote.text }}」</p>
-            <p style="color: #666;">{{ quote.artist }} - {{ quote.song_title }}</p>
-            <small style="color: #999;">投稿者: {{ quote.author.first_name|default:quote.author.username }} | {{ quote.created_at }}</small>
+        <div class="quote-card">
+            <span class="phrase">「{{ quote.text }}」</span>
+            <div class="info">{{ quote.artist }} - {{ quote.song_title }}</div>
+            <span class="author-tag">Posted by: {{ quote.author.first_name|default:quote.author.username }} | {{ quote.created_at|date:"Y.m.d" }}</span>
         </div>
     {% empty %}
-        <p>まだ名言がありません。上のリンクから追加してみてね！</p>
+        <p>No messages yet. Add your first lyric!</p>
     {% endfor %}
 </body>
 </html>
