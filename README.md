@@ -9,9 +9,9 @@
 * **こだわりのUI:** アーティストのライブ感をイメージしたネオンカラーとダークモードのCSSデザイン
 
 ## 使用技術
-* **Backend:** Python / Django
-* **Frontend:** HTML5 / CSS3
-* **Tools:** Git / GitHub / VS Code
+* **Backend:**  Python / Django
+* **Frontend:**  HTML5 / CSS3
+* **Tools:**  Git / GitHub / VS Code
 
 ## デザインのこだわり
 ライヴ会場を連想する世界観を表現するため、背景をブラック設定、アクセントカラーは鮮やかネオン（`#ccff00`）を採用
