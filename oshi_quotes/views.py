@@ -18,3 +18,10 @@ class QuoteCreateView(LoginRequiredMixin, CreateView):
         form.instance.author = self.request.user # ログイン中のユーザーを作者にする
         return super().form_valid(form)
     
+from django.views.generic.edit import UpdateView # すでにあれば不要です
+
+class QuoteUpdateView(UpdateView):
+    model = Quote
+    fields = ['text', 'artist', 'song_title'] # 編集を許可する項目
+    template_name = 'oshi_quotes/quote_form.html' # 追加用と同じ画面を使い回せます
+    success_url = reverse_lazy('quote_list') # 終わったらリストに戻る

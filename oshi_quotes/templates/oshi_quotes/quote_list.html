@@ -90,7 +90,12 @@
         <div class="quote-card">
             <span class="phrase">「{{ quote.text }}」</span>
             <div class="info">{{ quote.artist }} - {{ quote.song_title }}</div>
-            <span class="author-tag">Posted by: {{ quote.author.first_name|default:quote.author.username }} | {{ quote.created_at|date:"Y.m.d" }}</span>
+            <span class="author-tag">
+    Posted by: {{ quote.author.first_name|default:quote.author.username }} | {{ quote.created_at|date:"Y.m.d" }}
+    {% if quote.author == user %}
+        | <a href="{% url 'quote_edit' quote.pk %}" style="color: #ccff00;">[Edit]</a>
+    {% endif %}
+</span>
         </div>
     {% empty %}
         <p>No messages yet. Add your first lyric!</p>
