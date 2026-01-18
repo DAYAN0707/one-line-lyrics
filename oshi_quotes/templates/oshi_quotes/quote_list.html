@@ -6,7 +6,7 @@
     <style>
         /* 全体の背景と文字色 */
         body {
-            background-color: #0a0a0a; /* 真っ黒すぎない高級感のある黒 */
+            background-color: #0a0a0a;
             color: #ffffff;
             font-family: 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.6;
@@ -15,14 +15,13 @@
         }
 
         h1 {
-            color: #00ffcc; /* UVERっぽいエメラルドグリーン */
+            color: #00ffcc;
             border-bottom: 2px solid #00ffcc;
             padding-bottom: 10px;
             text-transform: uppercase;
             letter-spacing: 2px;
         }
 
-        /* リンクとボタン */
         a { color: #00ffcc; text-decoration: none; font-weight: bold; }
         a:hover { text-decoration: underline; }
 
@@ -35,47 +34,104 @@
             border-radius: 3px;
         }
 
-        button:hover {
-            background: #00ffcc;
-            color: #000;
-        }
+        button:hover { background: #00ffcc; color: #000; }
 
-        /* 投稿カードのデザイン */
+        /* アーカイブ用（一覧）のカード：控えめなデザイン */
         .quote-card {
-            background: #1a1a1a; /* カードの背景 */
-            border-left: 5px solid #ccff00; /* 左側のアクセント線 */
-            margin: 20px 0;
-            padding: 20px;
-            border-radius: 0 10px 10px 0;
-            box-shadow: 0 4px 15px rgba(204, 255, 0, 0.1); /* ほのかな光 */
+            background: #111;
+            border-left: 3px solid #444;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 0 5px 5px 0;
         }
 
         .phrase {
-            font-size: 22px;
-            font-weight: bold;
-            margin-bottom: 10px;
+            font-size: 16px;
+            color: #ccc;
+            margin-bottom: 5px;
             display: block;
         }
 
         .info {
-            color: #d4ff00;
-            font-size: 14px;
+            color: #888;
+            font-size: 13px;
         }
 
         .author-tag {
-            color: #aaaaaa;
-            font-size: 12px;
-            margin-top: 10px;
+            color: #666;
+            font-size: 11px;
+            margin-top: 5px;
             display: block;
         }
+
+        /* --- アニメーション設定 --- */
+
+        /* ゆっくりふわっと登場（3秒） */
+        @keyframes slowFadeIn {
+            0% { 
+                opacity: 0; 
+                transform: translateY(30px); 
+                filter: blur(8px); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateY(0); 
+                filter: blur(0);
+            }
+        }
+
+        /* 強くゆっくり鼓動するように発光（3秒） */
+        @keyframes intenseGlow {
+            0% { 
+                box-shadow: 0 0 10px rgba(204, 255, 0, 0.4), inset 0 0 5px rgba(204, 255, 0, 0.2); 
+            }
+            100% { 
+                box-shadow: 0 0 50px rgba(204, 255, 0, 0.9), inset 0 0 20px rgba(204, 255, 0, 0.5); 
+            }
+        }
+
+        /* 今日のフレーズ専用ボックス */
+        /* --- ここを書き換え --- */
+
+.today-quote-box {
+    /* slowFadeIn（登場）と intenseGlow（発光）の両方を 2s に変更 */
+    animation: slowFadeIn 2s ease-out forwards, 
+               intenseGlow 2s ease-in-out infinite alternate;
+}
+
+/* アニメーション定義も 2s に合わせて微調整 */
+@keyframes slowFadeIn {
+    0% { 
+        opacity: 0; 
+        transform: translateY(20px); /* 移動距離を少し短くしてスピード感を出す */
+        filter: blur(5px); 
+    }
+    100% { 
+        opacity: 1; 
+        transform: translateY(0); 
+        filter: blur(0);
+    }
+}
     </style>
 </head>
 <body>
     <h1>One Line Lyrics</h1>
 
+    {% if random_quote %}
+    <div class="today-quote-box" style="border: 2px solid #ccff00; padding: 30px; margin-bottom: 40px; border-radius: 15px; background-color: #000; text-align: center;">
+        <h3 style="color: #ccff00; margin-top: 0; font-size: 14px; letter-spacing: 5px; text-shadow: 0 0 8px #ccff00;">✨ TODAY'S PICK UP ✨</h3>
+        <p style="font-size: 2rem; color: #fff; margin: 20px 0; font-weight: bold; text-shadow: 0 0 15px rgba(255,255,255,0.5);">
+            「{{ random_quote.text }}」
+        </p>
+        <p style="text-align: right; color: #aaa; margin-bottom: 0; font-size: 14px;">
+            — {{ random_quote.artist }} / {{ random_quote.song_title }}
+        </p>
+    </div>
+    {% endif %}
+
     <div style="margin-bottom: 20px;">
         {% if user.is_authenticated %}
-            <span>Welcome, <strong>{{ user.first_name|default:user.username }}</strong></span>
+            <span style="font-size: 14px; color: #aaa;">Welcome, <strong>{{ user.first_name|default:user.username }}</strong></span>
             | <a href="{% url 'quote_add' %}">[+ Add Phrase]</a>
             | <form action="{% url 'logout' %}" method="post" style="display: inline;">
                 {% csrf_token %}
@@ -86,16 +142,18 @@
         {% endif %}
     </div>
 
+    <h4 style="color: #444; border-bottom: 1px solid #222; margin-top: 40px;">ARCHIVE</h4>
+
     {% for quote in quotes %}
         <div class="quote-card">
             <span class="phrase">「{{ quote.text }}」</span>
             <div class="info">{{ quote.artist }} - {{ quote.song_title }}</div>
             <span class="author-tag">
-    Posted by: {{ quote.author.first_name|default:quote.author.username }} | {{ quote.created_at|date:"Y.m.d" }}
-    {% if quote.author == user %}
-        | <a href="{% url 'quote_edit' quote.pk %}" style="color: #ccff00;">[Edit]</a>
-    {% endif %}
-</span>
+                Posted by: {{ quote.author.first_name|default:quote.author.username }} | {{ quote.created_at|date:"Y.m.d" }}
+                {% if quote.author == user %}
+                    | <a href="{% url 'quote_edit' quote.pk %}" style="color: #ccff00; font-size: 11px;">[Edit]</a>
+                {% endif %}
+            </span>
         </div>
     {% empty %}
         <p>No messages yet. Add your first lyric!</p>

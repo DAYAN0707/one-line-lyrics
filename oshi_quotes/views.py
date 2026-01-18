@@ -1,6 +1,7 @@
-from django.views.generic import ListView, CreateView # Create_Viewを追加
-from django.contrib.auth.mixins import LoginRequiredMixin # ログイン必須にするため
+from django.views.generic import ListView, CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
+from django.views.generic.edit import UpdateView # UpdateViewのインポート
 from .models import Quote
 
 class QuoteListView(ListView):
@@ -8,20 +9,25 @@ class QuoteListView(ListView):
     template_name = 'oshi_quotes/quote_list.html'
     context_object_name = 'quotes'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # ランダムな1件を 'random_quote' としてテンプレートに渡す
+        context['random_quote'] = Quote.objects.order_by('?').first()
+        return context
+
+# --- 以下、CreateView と UpdateView は今のままでOK ---
 class QuoteCreateView(LoginRequiredMixin, CreateView):
     model = Quote
     template_name = 'oshi_quotes/quote_form.html'
-    fields = ['text', 'artist', 'song_title'] # 入力してもらう項目
-    success_url = reverse_lazy('quote_list') # 保存したら一覧へ
+    fields = ['text', 'artist', 'song_title']
+    success_url = reverse_lazy('quote_list')
 
     def form_valid(self, form):
-        form.instance.author = self.request.user # ログイン中のユーザーを作者にする
+        form.instance.author = self.request.user
         return super().form_valid(form)
-    
-from django.views.generic.edit import UpdateView # すでにあれば不要です
 
 class QuoteUpdateView(UpdateView):
     model = Quote
-    fields = ['text', 'artist', 'song_title'] # 編集を許可する項目
-    template_name = 'oshi_quotes/quote_form.html' # 追加用と同じ画面を使い回せます
-    success_url = reverse_lazy('quote_list') # 終わったらリストに戻る
+    fields = ['text', 'artist', 'song_title']
+    template_name = 'oshi_quotes/quote_form.html'
+    success_url = reverse_lazy('quote_list')
