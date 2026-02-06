@@ -3,6 +3,7 @@ from django.contrib.auth.models import User  # Django標準のユーザー機能
 
 #Quote モデルに ForeignKey を持たせ、投稿とユーザーを1対多で関連付け
 class Quote(models.Model):
+    # User と Quote（ER図の1/N）、誰の投稿かをDBレベルで持てる
     # 誰の投稿か（ユーザーが削除されたら、その人の投稿も消える設定）
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     
