@@ -53,3 +53,12 @@
 - 環境構築と公開について、本アプリは現在ローカル環境での動作を確認済みです。
 - SECRET_KEY 等の機密情報は環境変数で管理し、GitHub上に秘匿情報が残らないよう settings.py から分離しています。
 - 今後は AWS や Render 等へのデプロイを通じ、本番環境におけるパフォーマンスの最適化や静的ファイルの配信管理を学習する予定です。
+
+## ER図
+
+<p align="center">
+  <img src="docs/one_line_lyrics_er.drawio.png" alt="One Line Lyrics ER Diagram" width="700">
+</p>
+
+User と Quote は 1対多 の関係で、
+1人のユーザーが複数の歌詞投稿を持つ設計としています。
