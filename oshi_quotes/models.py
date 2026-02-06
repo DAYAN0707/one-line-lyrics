@@ -13,6 +13,6 @@ class Quote(models.Model):
     # 自動で登録日時を入れる
     created_at = models.DateTimeField(auto_now_add=True)
 
+    #__str__ メソッドを定義し、管理画面上「どのアーティストのどのフレーズか」一目で判別
     def __str__(self):
         return f"{self.artist} - {self.text[:10]}..."
-    
