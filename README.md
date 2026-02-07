@@ -1,7 +1,16 @@
 # One Line Lyrics
-
 「心に刺さる、一行・ワンフレーズ」<br>
 自分の中の「推し歌詞」をコレクション・共有するWebアプリです。
+
+## Screenshots
+### Top / Quote List Page
+![Top Page](docs/screenshots/top_page.png)
+
+ログインユーザー向けトップ画面です。<br>
+自身が投稿したフレーズを一覧で確認でき、新規追加・編集・削除といった CRUD 操作が可能です。<br>
+
+※ 未ログイン時は、投稿の閲覧のみ可能、編集・追加ボタンは表示されません。
+
 
 ## 開発の背景
 音楽を聴いている中で、曲全体だけでなく「特にこの一行に救われた」と感じる瞬間があります。<br>
@@ -60,5 +69,5 @@
   <img src="docs/one_line_lyrics_er.drawio.png" alt="One Line Lyrics ER Diagram" width="700">
 </p>
 
-User と Quote は 1対多 の関係で、
-1人のユーザーが複数の歌詞投稿を持つ設計としています。
+本ER図は、テーブル構造やリレーションが他の開発者にも直感的に伝わるよう、実務で広く採用されている IE（Information Engineering）記法を用いて作成しています。<br>
+User と Quote は 1対多 の関係で、1人のユーザーが複数の歌詞投稿を持つ設計としています。
