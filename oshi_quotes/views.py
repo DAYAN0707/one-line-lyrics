@@ -1,14 +1,16 @@
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView, CreateView, DeleteView
 from django.urls import reverse_lazy
-from django.views.generic.edit import UpdateView # UpdateViewのインポート
+from django.views.generic.edit import UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Quote
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin # UserPassesTestMixinのインポート
 
+# 一覧表示用ビュー
 class QuoteListView(ListView):
     model = Quote
     template_name = 'oshi_quotes/quote_list.html'
-    context_object_name = 'quotes'
-
+    context_object_name = 'quotes' 
+    
+    # ランダムなフレーズをテンプレートに渡すため、get_context_data をオーバーライド
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # ランダムな1件を 'random_quote' としてテンプレートに渡す
@@ -22,7 +24,7 @@ class QuoteCreateView(LoginRequiredMixin, CreateView):
     fields = ['text', 'artist', 'song_title']
     success_url = reverse_lazy('quote_list')
 
-# 投稿者を現在のログインユーザーとして保存
+    # 投稿者を現在のログインユーザーとして保存
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
@@ -33,10 +35,21 @@ class QuoteUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     fields = ['text', 'artist', 'song_title']
     template_name = 'oshi_quotes/quote_form.html'
     success_url = reverse_lazy('quote_list')
-
     raise_exception = True # 権限がない場合に403エラーを返す
 
-# 投稿者本人のみ編集可能かを判定
+    # 投稿者本人のみ編集可能かを判定
+    def test_func(self):
+        quote = self.get_object()
+        return quote.author == self.request.user
+    
+# 投稿削除用ビュー(他ユーザーの投稿は削除不可)
+class QuoteDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Quote
+    template_name = 'oshi_quotes/quote_confirm_delete.html'
+    success_url = reverse_lazy('quote_list')
+    raise_exception = True  # 権限なしは403
+
+    # 投稿者本人のみ削除可能かを判定
     def test_func(self):
         quote = self.get_object()
         return quote.author == self.request.user

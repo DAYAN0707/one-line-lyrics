@@ -160,6 +160,16 @@
                 {% if quote.author == user %}
                     | <a href="{% url 'quote_edit' quote.pk %}" style="color: #ccff00; font-size: 11px;">[Edit]</a>
                 {% endif %}
+    <!-- 投稿者本人のみ編集・削除可能なリンクを表示 -->
+    {% if user.is_authenticated and quote.author == user %}
+    <!-- UX向上,誤操作防止 -->
+    <a href="{% url 'quote_edit' quote.pk %}" class="btn btn-sm btn-outline-primary">
+        編集
+    </a>
+    <a href="{% url 'quote_delete' quote.pk %}" class="btn btn-sm btn-outline-danger">
+        削除
+    </a>
+    {% endif %}            
             </span>
         </div>
     {% empty %}

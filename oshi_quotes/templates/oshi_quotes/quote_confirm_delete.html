@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5"> <!-- Bootstrapのコンテナクラスで中央寄せと余白を追加 -->
+    <div class="card border-danger"> <!-- Bootstrapのカードクラスで赤い枠を追加 -->
+        <div class="card-header bg-danger text-white"> <!-- カードヘッダーに赤い背景と白い文字を設定 -->
+            <h2 class="h5 mb-0">投稿の削除確認</h2> <!-- ヘッダーテキストを小さめの見出しに -->
+        </div>
+        <div class="card-body">
+            <p>以下の「推し歌詞」を削除してもよろしいですか？</p>
+            <blockquote class="blockquote bg-light p-3 border-start border-4"> <!-- ブロッククオートに背景色とパディング、左側に太い線を追加 -->
+                <p class="mb-0">「{{ object.text }}」</p> <!-- フレーズのテキストを表示 -->
+                <footer class="blockquote-footer mt-1">{{ object.artist }} - {{ object.song_title }}</footer> <!-- アーティスト名と曲名をフッターに表示 -->
+            </blockquote>
+            
+            <!-- 条件分岐なし,権限チェックは View に任せる,テンプレはシンプルに保つ -->
+            <form method="post"> <!-- 削除はPOSTリクエストで行うため、フォームを使用 -->
+                {% csrf_token %} <!-- CSRFトークンを追加してセキュリティを確保 -->
+                <button type="submit" class="btn btn-danger">本当に削除する</button>  <!-- 削除ボタンを赤色に -->
+                <a href="{% url 'quote_list' %}" class="btn btn-secondary">キャンセル</a> <!-- キャンセルは通常のリンクで、灰色のボタン風に -->
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
