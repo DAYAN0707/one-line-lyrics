@@ -69,5 +69,34 @@
   <img src="docs/one_line_lyrics_er.drawio.png" alt="One Line Lyrics ER Diagram" width="700">
 </p>
 
-本ER図は、テーブル構造やリレーションが他の開発者にも直感的に伝わるよう、実務で広く採用されている IE（Information Engineering）記法を用いて作成しています。<br>
-User と Quote は 1対多 の関係で、1人のユーザーが複数の歌詞投稿を持つ設計としています。
+本ER図は、テーブル構造やリレーションが他の開発者にも直感的に伝わるよう、
+実務で広く採用されている IE（Information Engineering）記法を用いて作成しています。<br>
+User と Quote は 1対多の関係で、1人のユーザーが複数の歌詞投稿を持つ設計としています。
+Quote.author_id は NOT NULL とし、すべての投稿は必ず User に紐づくよう制約を設けています。<br>
+
+※ User は Django 標準の認証機構（AbstractUser）を前提としており、password は Django によりハッシュ化されて保存されます。
+
+### ER図（Mermaid）
+
+```mermaid
+erDiagram
+    User ||--o{ Quote : "posts (mandatory)"
+
+    User {
+        int id PK
+        string username
+        string email
+        string password
+    }
+
+    Quote {
+        int id PK
+        int author_id FK "NOT NULL"
+        string text
+        string artist
+        string song_title
+        datetime created_at
+    }
+```
+
+※ Mermaid では IE記法の必須／任意関係を完全には表現できないため、必須制約（NOT NULL）や業務ルールは属性コメントおよび文章で補足しています。
