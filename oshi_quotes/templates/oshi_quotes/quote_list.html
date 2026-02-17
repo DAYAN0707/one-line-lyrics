@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8"> 
     <title>One Line Lyrics - LIVE Style</title>
     <style>
         /* 全体の背景と文字色 */
@@ -45,6 +45,7 @@
             border-radius: 0 5px 5px 0;
         }
 
+        /* フレーズのスタイル */
         .phrase {
             font-size: 16px;
             color: #ccc;
@@ -52,11 +53,13 @@
             display: block;
         }
 
+        /* アーティスト名と曲名のスタイル */
         .info {
             color: #888;
             font-size: 13px;
         }
 
+        /* 投稿者と投稿日を小さく表示 */
         .author-tag {
             color: #666;
             font-size: 11px;
@@ -66,21 +69,21 @@
 
         /* --- アニメーション設定 --- */
 
-        /* ゆっくりふわっと登場（3秒） */
+        /* ゆっくりとフェードインしながら上に移動し、ぼかしが消えるアニメーション */
         @keyframes slowFadeIn {
             0% { 
-                opacity: 0; 
-                transform: translateY(30px); 
-                filter: blur(8px); 
+                opacity: 0; /* 最初は完全に透明な状態からスタート */
+                transform: translateY(30px);  /* 最初は下に30px移動している状態からスタート */
+                filter: blur(8px); /* 最初はぼかしが強い状態からスタート */
             }
             100% { 
-                opacity: 1; 
-                transform: translateY(0); 
-                filter: blur(0);
+                opacity: 1; /* 最終的には完全に表示される状態に */
+                transform: translateY(0); /* 最終的には元の位置に戻る状態に */
+                filter: blur(0); /* 最終的にはぼかしが消える状態に */
             }
         }
 
-        /* 強くゆっくり鼓動するように発光（3秒） */
+        /* 強くゆっくり鼓動するように発光*/
         @keyframes intenseGlow {
             0% { 
                 box-shadow: 0 0 10px rgba(204, 255, 0, 0.4), inset 0 0 5px rgba(204, 255, 0, 0.2); 
@@ -91,32 +94,34 @@
         }
 
         /* 今日のフレーズ専用ボックス */
-        /* --- ここを書き換え --- */
+        /* --- 書き換え --- */
 
 .today-quote-box {
-    /* slowFadeIn（登場）と intenseGlow（発光）の両方を 2s に変更 */
+    /* slowFadeIn(登場)と intenseGlow(発光)の両方を2秒に変更 */
     animation: slowFadeIn 2s ease-out forwards, 
                 intenseGlow 2s ease-in-out infinite alternate;
 }
 
-/* アニメーション定義も 2s に合わせて微調整 */
+/* アニメーション定義も2秒に合わせて微調整 */
 @keyframes slowFadeIn {
     0% { 
-        opacity: 0; 
+        opacity: 0; /* 完全に透明 */   
         transform: translateY(20px); /* 移動距離を少し短くしてスピード感を出す */
-        filter: blur(5px); 
+        filter: blur(5px); /* ぼかしを少し減らして自然な感じに *
     }
     100% { 
-        opacity: 1; 
-        transform: translateY(0); 
-        filter: blur(0);
+        opacity: 1; /* フェードイン完了 */ 
+        transform: translateY(0); /* 元の位置に戻る */
+        filter: blur(0); /* ぼかしが消える */
     }
 }
     </style>
 </head>
+
 <body>
     <h1>One Line Lyrics</h1>
 
+    <!-- 今日のフレーズ表示 -->
     {% if random_quote %}
     <div class="today-quote-box" style="border: 2px solid #ccff00; padding: 30px; margin-bottom: 40px; border-radius: 15px; background-color: #000; text-align: center;">
         <h3 style="color: #ccff00; margin-top: 0; font-size: 14px; letter-spacing: 5px; text-shadow: 0 0 8px #ccff00;">✨ TODAY'S PICK UP ✨</h3>
@@ -129,25 +134,27 @@
     </div>
     {% endif %}
 
+    <!-- ログイン状態に応じた表示 -->
     <div style="margin-bottom: 20px;">
-        {% if user.is_authenticated %}
+        {% if user.is_authenticated %} <!-- ログイン状態ならユーザー名・投稿用リンク・ログアウトボタンを表示 -->
             <span style="font-size: 14px; color: #aaa;">Welcome, <strong>{{ user.first_name|default:user.username }}</strong></span>
             | <a href="{% url 'quote_add' %}">[+ Add Phrase]</a>
-            | <form action="{% url 'logout' %}" method="post" style="display: inline;">
+            | <form action="{% url 'logout' %}" method="post" style="display: inline;">　<!-- ログアウトはPOSTリクエストで行うため、フォームを使用 -->
                 {% csrf_token %}
                 <button type="submit">Logout</button>
             </form>
         {% else %}
-            <a href="{% url 'login' %}">Login to Post</a>
+            <a href="{% url 'login' %}">Login to Post</a> <!-- ログインしていない場合はログインへのリンクを表示 -->
         {% endif %}
     </div>
 
     <h4 style="color: #444; border-bottom: 1px solid #222; margin-top: 40px;">ARCHIVE</h4>
 
+    <!-- フレーズの一覧表示 -->
     {% for quote in quotes %}
         <div class="quote-card">
-            <span class="phrase">「{{ quote.text }}」</span>
-            <div class="info">{{ quote.artist }} - {{ quote.song_title }}</div>
+            <span class="phrase">「{{ quote.text }}」</span> <!-- フレーズを大きく表示 -->
+            <div class="info">{{ quote.artist }} - {{ quote.song_title }}</div> <!-- アーティスト名と曲名を小さく表示 -->
             <span class="author-tag">
                 Posted by: {{ quote.author.first_name|default:quote.author.username }} | {{ quote.created_at|date:"Y.m.d" }}
                 {% if quote.author == user %}
@@ -156,7 +163,7 @@
             </span>
         </div>
     {% empty %}
-        <p>No messages yet. Add your first lyric!</p>
+        <p>No messages yet. Add your first lyric!</p>　<!-- フレーズがまだない場合のメッセージ -->
     {% endfor %}
 </body>
 </html>

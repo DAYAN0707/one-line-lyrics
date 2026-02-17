@@ -4,11 +4,13 @@
 <body>
     <h1>新しいフレーズを登録</h1>
     <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
+        {% csrf_token %} <!-- 外部からの勝手な投稿（CSRF攻撃）を防ぐ -->
+        {{ form.as_p }} <!-- models.py で定義した項目(text, author)を自動的に <p>タグ(段落)で囲み、HTMLとして出力 -->
         <button type="submit">保存する</button>
     </form>
     <hr>
-    <a href="{% url 'quote_list' %}">一覧に戻る</a>
+    
+    <a href="{% url 'quote_list' %}">一覧に戻る</a>    <!-- urls.py で付けた名前(quote_list)を使ってリンクを作成 -->
+    <!-- これでURLが変更されても名前さえ同じならHTML側のコードを書き換える必要なし -->
 </body>
 </html>
